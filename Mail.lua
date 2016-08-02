@@ -8,6 +8,8 @@ local ADDON_NAME, addon = ...;
 local module = addon:NewModule("mail", "AceEvent-3.0");
 
 function module:OnEnable()
+	self:RegisterEvent("MAIL_SHOW");
+	self:RegisterEvent("MAIL_CLOSED");
 	self:RegisterEvent("MAIL_INBOX_UPDATE");
 	hooksecurefunc("SendMail", function(...) module:SendMailHook(...) end);
 end
@@ -27,7 +29,17 @@ function module:SendMailHook(recipient)
 	end
 end
 
+function module:MAIL_SHOW()
+	module.isOpen = true;
+end
+
+function module:MAIL_CLOSED()
+	module.isOpen = false;
+end
+
 function module:MAIL_INBOX_UPDATE()
+	if(not module.isOpen) then return end
+	
 	local items = {};
 	
 	local numInboxItems = GetInboxNumItems();

@@ -29,8 +29,15 @@ local SAVEDVARS = {
 						["incomplete"]   = {
 							["bank"]        = true,
 							["mail"]        = true,
-							["voidstorage"] = true,
+							["voidstorage"] = CanUseVoidStorage(),
 						},
+						
+						["temp"] = {
+							["equipped"] = {
+								["self"] = {},
+								["bank"] = {},
+							},
+						}
 					},
 				},
 			},
@@ -95,12 +102,19 @@ end
 function addon:HookTips()
 	addon:RegisterTooltip(GameTooltip);
 	addon:RegisterTooltip(ItemRefTooltip);
+	
+	-- LibExtraTip:RegisterTooltip(BattlePetTooltip);
+	-- LibExtraTip:RegisterTooltip(FloatingBattlePetTooltip);
 	-- LibExtraTip:RegisterTooltip(GameTooltip);
 	-- LibExtraTip:RegisterTooltip(ItemRefTooltip);
 	
-	-- LibExtraTip:AddCallback(function(...)
-	-- 	addon:AddTooltipInfo(...);
-	-- end, 300);
+	-- LibExtraTip:AddCallback({
+	-- 	type = "battlepet",
+	-- 	callback = function(...)
+	-- 		-- print(...);
+	-- 		addon:AddTooltipInfo(...);
+	-- 	end,
+	-- });
 	
 	-- hooksecurefunc(GameTooltip, "SetInboxItem", function(tooltip, mailID, attachmentIndex)
 	-- 	local link = GetInboxItemLink(mailID, attachmentIndex or 1);
@@ -252,13 +266,15 @@ function addon:UpdateItemCache()
 	local realms = addon:GetConnectedRealms();
 	for _, realm in ipairs(realms) do
 		for character, data in pairs(self.db.global.realms[realm][faction]) do
+			local fullname = string.format("%s-%s", character, realm);
+			
 			for storage, _ in pairs(ITEM_STORAGES) do
 				for itemIndex, itemString in pairs(data[storage]) do
 					addon.itemCache[itemIndex]                     = addon.itemCache[itemIndex] or {};
-					addon.itemCache[itemIndex][character]          = addon.itemCache[itemIndex][character] or {};
-					addon.itemCache[itemIndex][character][storage] = addon.itemCache[itemIndex][character][storage] or {};
+					addon.itemCache[itemIndex][fullname]          = addon.itemCache[itemIndex][fullname] or {};
+					addon.itemCache[itemIndex][fullname][storage] = addon.itemCache[itemIndex][fullname][storage] or {};
 					
-					tinsert(addon.itemCache[itemIndex][character][storage], itemString);
+					tinsert(addon.itemCache[itemIndex][fullname][storage], itemString);
 				end
 			end
 		end

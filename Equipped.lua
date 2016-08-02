@@ -27,7 +27,9 @@ function module:UpdateSelfEquipped()
 		addon:AddItemIndex(items, link);
 	end
 	
-	equipped.self = items;
+	local playerData = addon:GetPlayerData();
+	playerData.temp.equipped.self = items;
+	
 	module:UpdateCombined();
 end
 
@@ -49,7 +51,9 @@ function module:UpdateBankEquipped()
 		addon:AddItemIndex(items, link);
 	end
 	
-	equipped.bank = items;
+	local playerData = addon:GetPlayerData();
+	playerData.temp.equipped.bank = items;
+	
 	module:UpdateCombined();
 end
 
@@ -58,9 +62,14 @@ function module:BANKFRAME_OPENED()
 end
 
 function module:UpdateCombined()
-	local items = equipped.self;
+	local playerData = addon:GetPlayerData();
+	local items = {};
 	
-	for index, itemString in pairs(equipped.bank) do
+	for index, itemString in pairs(playerData.temp.equipped.self) do
+		items[index] = itemString;
+	end
+	
+	for index, itemString in pairs(playerData.temp.equipped.bank) do
 		local count = addon:ParseItemString(itemString);
 		
 		if(items[index]) then
@@ -71,7 +80,6 @@ function module:UpdateCombined()
 		items[index] = ("%d"):format(count);
 	end
 	
-	local playerData = addon:GetPlayerData();
 	playerData.equipped = items;
 	
 	addon:MarkDirty();
