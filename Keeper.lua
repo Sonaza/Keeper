@@ -48,8 +48,8 @@ local ITEM_STORAGES = {
 };
 
 local IGNORED_ITEMS = {
-	["1:6948"]      = true, -- Hearthstone
-	["1:110560"]    = true, -- Garrison Hearthstone
+	["1;6948"]      = true, -- Hearthstone
+	["1;110560"]    = true, -- Garrison Hearthstone
 };
 
 function addon:OnInitialize()
@@ -65,18 +65,48 @@ function addon:OnEnable()
 	local _, class = UnitClass("player");
 	playerData.class = class;
 	
-	LibExtraTip:RegisterTooltip(GameTooltip);
-	LibExtraTip:RegisterTooltip(ItemRefTooltip);
-	
-	LibExtraTip:AddCallback(function(...)
-		addon:AddTooltipInfo(...);
-	end, 500);
+	addon:HookTips();
 	
 	addon.pendingCacheUpdate = true;
 	
 	if(addon:HasIncompleteDatabase()) then
 		self:RegisterEvent("PLAYER_STARTED_MOVING");
 	end
+end
+
+function addon:HookTips()
+	LibExtraTip:RegisterTooltip(GameTooltip);
+	LibExtraTip:RegisterTooltip(ItemRefTooltip);
+	
+	LibExtraTip:AddCallback(function(...)
+		addon:AddTooltipInfo(...);
+	end, 300);
+	
+	hooksecurefunc(GameTooltip, "SetInboxItem", function(tooltip, mailID, attachmentIndex)
+		local link = GetInboxItemLink(mailID, attachmentIndex or 1);
+		if(link) then
+			addon:AddTooltipInfo(tooltip, link);
+			tooltip:Show();
+		end
+	end);
+	
+	hooksecurefunc(GameTooltip, "SetRecipeResultItem", function(tooltip, recipeID)
+		local link = C_TradeSkillUI.GetRecipeItemLink(recipeID);
+		print(link);
+		if(link) then
+			addon:AddTooltipInfo(tooltip, link);
+			tooltip:Show();
+		end
+	end);
+	
+	hooksecurefunc(GameTooltip, "SetRecipeReagentItem", function(tooltip, recipeID, reagentIndex)
+		local link = C_TradeSkillUI.GetRecipeReagentItemLink(recipeID, reagentIndex);
+		print(link);
+		if(link) then
+			addon:AddTooltipInfo(tooltip, link);
+			tooltip:Show();
+		end
+	end);
 end
 
 function addon:PLAYER_STARTED_MOVING()
@@ -113,6 +143,23 @@ function addon:DoIncompleteAlert()
 	addon:AddMessage(("Current database for |c%s%s|r is still incomplete."):format(color, name))
 	addon:AddMessage(("Missing: %s."):format(table.concat(missingStorages, ", ")));
 	addon:AddMessage("Please visit the places in question so the addon can build the database. Thank you!");
+end
+
+function addon:MarkComplete(storage)
+	local wasIncomplete = addon:HasIncompleteDatabase();
+	if(not wasIncomplete) then return end
+	
+	local playerData = addon:GetPlayerData();
+	if(playerData.incomplete[storage] ~= nil) then
+		if(playerData.incomplete[storage]) then 
+			addon:AddMessage(("%s added to database."):format(ITEM_STORAGES[storage]));
+		end
+		playerData.incomplete[storage] = false;
+	end
+	
+	if(wasIncomplete and not addon:HasIncompleteDatabase()) then
+		addon:AddMessage("Database complete, yay!");
+	end
 end
 
 local MESSAGE_PATTERN = "|cff2dbcffKeeper|r %s";

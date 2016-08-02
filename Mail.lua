@@ -48,7 +48,5 @@ function module:MAIL_INBOX_UPDATE()
 	playerData.mail = items;
 	
 	addon:MarkDirty();
-	
-	local playerData = addon:GetPlayerData();
-	playerData.incomplete.mail = false;
+	addon:MarkComplete("mail");
 end

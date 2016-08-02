@@ -13,6 +13,8 @@ function module:OnEnable()
 	self:RegisterEvent("BAG_UPDATE_DELAYED");
 	self:RegisterEvent("PLAYERBANKSLOTS_CHANGED", "BAG_UPDATE_DELAYED");
 	self:RegisterEvent("PLAYERREAGENTBANKSLOTS_CHANGED");
+	
+	module:UpdateReagents();
 end
 
 function module:UpdateBank()
@@ -67,8 +69,7 @@ function module:BANKFRAME_OPENED()
 	module:UpdateBank();
 	module:UpdateReagents();
 	
-	local playerData = addon:GetPlayerData();
-	playerData.incomplete.bank = false;
+	addon:MarkComplete("bank");
 end
 
 function module:BANKFRAME_CLOSED()

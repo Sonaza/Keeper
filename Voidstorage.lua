@@ -30,9 +30,7 @@ function module:UpdateVoidstorage()
 	playerData.voidstorage = items;
 	
 	addon:MarkDirty();
-	
-	local playerData = addon:GetPlayerData();
-	playerData.incomplete.voidstorage = false;
+	addon:MarkComplete("voidstorage");
 end
 
 function module:VOID_STORAGE_OPEN()
