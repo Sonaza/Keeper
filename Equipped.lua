@@ -58,13 +58,9 @@ function module:BANKFRAME_OPENED()
 end
 
 function module:UpdateCombined()
-	local items = {};
+	local items = equipped.self;
 	
-	for index, itemstring in pairs(equipped.self) do
-		items[index] = itemString;
-	end
-	
-	for index, itemstring in pairs(equipped.bank) do
+	for index, itemString in pairs(equipped.bank) do
 		local count = addon:ParseItemString(itemString);
 		
 		if(items[index]) then

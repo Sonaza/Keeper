@@ -74,39 +74,57 @@ function addon:OnEnable()
 	end
 end
 
+function addon:RegisterTooltip(tooltip)
+	local modified = false;
+	
+	tooltip:HookScript('OnTooltipCleared', function(self)
+		modified = false;
+	end)
+
+	tooltip:HookScript('OnTooltipSetItem', function(self)
+		if(modified) then return end
+		modified = true;
+		
+		local name, link = self:GetItem();
+		if(link and GetItemInfo(link)) then
+			addon:AddTooltipInfo(self, link);
+		end
+	end);
+end
+
 function addon:HookTips()
-	LibExtraTip:RegisterTooltip(GameTooltip);
-	LibExtraTip:RegisterTooltip(ItemRefTooltip);
+	addon:RegisterTooltip(GameTooltip);
+	addon:RegisterTooltip(ItemRefTooltip);
+	-- LibExtraTip:RegisterTooltip(GameTooltip);
+	-- LibExtraTip:RegisterTooltip(ItemRefTooltip);
 	
-	LibExtraTip:AddCallback(function(...)
-		addon:AddTooltipInfo(...);
-	end, 300);
+	-- LibExtraTip:AddCallback(function(...)
+	-- 	addon:AddTooltipInfo(...);
+	-- end, 300);
 	
-	hooksecurefunc(GameTooltip, "SetInboxItem", function(tooltip, mailID, attachmentIndex)
-		local link = GetInboxItemLink(mailID, attachmentIndex or 1);
-		if(link) then
-			addon:AddTooltipInfo(tooltip, link);
-			tooltip:Show();
-		end
-	end);
+	-- hooksecurefunc(GameTooltip, "SetInboxItem", function(tooltip, mailID, attachmentIndex)
+	-- 	local link = GetInboxItemLink(mailID, attachmentIndex or 1);
+	-- 	if(link) then
+	-- 		addon:AddTooltipInfo(tooltip, link);
+	-- 		tooltip:Show();
+	-- 	end
+	-- end);
 	
-	hooksecurefunc(GameTooltip, "SetRecipeResultItem", function(tooltip, recipeID)
-		local link = C_TradeSkillUI.GetRecipeItemLink(recipeID);
-		print(link);
-		if(link) then
-			addon:AddTooltipInfo(tooltip, link);
-			tooltip:Show();
-		end
-	end);
+	-- hooksecurefunc(GameTooltip, "SetRecipeResultItem", function(tooltip, recipeID)
+	-- 	local link = C_TradeSkillUI.GetRecipeItemLink(recipeID);
+	-- 	if(link) then
+	-- 		addon:AddTooltipInfo(tooltip, link);
+	-- 		tooltip:Show();
+	-- 	end
+	-- end);
 	
-	hooksecurefunc(GameTooltip, "SetRecipeReagentItem", function(tooltip, recipeID, reagentIndex)
-		local link = C_TradeSkillUI.GetRecipeReagentItemLink(recipeID, reagentIndex);
-		print(link);
-		if(link) then
-			addon:AddTooltipInfo(tooltip, link);
-			tooltip:Show();
-		end
-	end);
+	-- hooksecurefunc(GameTooltip, "SetRecipeReagentItem", function(tooltip, recipeID, reagentIndex)
+	-- 	local link = C_TradeSkillUI.GetRecipeReagentItemLink(recipeID, reagentIndex);
+	-- 	if(link) then
+	-- 		addon:AddTooltipInfo(tooltip, link);
+	-- 		tooltip:Show();
+	-- 	end
+	-- end);
 end
 
 function addon:PLAYER_STARTED_MOVING()
@@ -185,12 +203,14 @@ function addon:AddTooltipInfo(tooltip, itemlink)
 	if(not itemdata or IGNORED_ITEMS[itemIndex]) then return end
 	
 	local totalCount = 0;
+	local characters = 0;
 	
 	tooltip:AddLine(" ");
 	
 	for character, data in pairs(itemdata) do
 		local storages = {};
 		local characterCount = 0;
+		characters = characters + 1;
 		
 		local color = addon:GetCharacterColor(character);
 		
@@ -217,7 +237,7 @@ function addon:AddTooltipInfo(tooltip, itemlink)
 	end
 	
 	-- Only if there was more than one character
-	if(#itemdata > 1) then
+	if(characters > 1) then
 		tooltip:AddDoubleLine("|cffc7c7c7Total|r", ("|cffc7c7c7%d|r"):format(totalCount));
 	end
 end
@@ -385,7 +405,7 @@ function addon:ParseItemString(itemString)
 	if(not itemString) then return end
 	
 	local count = string.split(";", itemString);
-	return tonumber(count);
+	return tonumber(count) or 0;
 end
 
 function addon:MakeItemIndex(itemlink)

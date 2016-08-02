@@ -9,11 +9,12 @@ local module = addon:NewModule("voidstorage", "AceEvent-3.0");
 
 function module:OnEnable()
 	self:RegisterEvent("VOID_STORAGE_OPEN");
+	self:RegisterEvent("VOID_STORAGE_CLOSE");
 	self:RegisterEvent("VOID_STORAGE_UPDATE");
 end
 
 function module:UpdateVoidstorage()
-	if(not CanUseVoidStorage()) then return end
+	if(not CanUseVoidStorage() or not module.isOpen) then return end
 	
 	local items = {};
 	for tabIndex = 1, 2 do
@@ -34,7 +35,12 @@ function module:UpdateVoidstorage()
 end
 
 function module:VOID_STORAGE_OPEN()
+	module.isOpen = true;
 	module:UpdateVoidstorage()
+end
+
+function module:VOID_STORAGE_CLOSE()
+	module.isOpen = false;
 end
 
 function module:VOID_STORAGE_UPDATE()
