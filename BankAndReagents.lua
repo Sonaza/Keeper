@@ -73,7 +73,7 @@ function module:BANKFRAME_OPENED()
 end
 
 function module:BANKFRAME_CLOSED()
-	module.bankOpen = true;
+	module.bankOpen = false;
 end
 
 function module:PLAYERREAGENTBANKSLOTS_CHANGED()
