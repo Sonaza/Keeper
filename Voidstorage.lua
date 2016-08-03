@@ -19,11 +19,8 @@ function module:UpdateVoidstorage()
 	local items = {};
 	for tabIndex = 1, 2 do
 		for slot = 1, 80 do
-			local itemID = GetVoidItemInfo(tabIndex, slot);
-			if(itemID) then
-				local _, link = GetItemInfo(itemID);
-				addon:AddItemIndex(items, link);
-			end
+			local link = GetVoidItemHyperlinkString(tabIndex, slot);
+			addon:AddItemIndex(items, link);
 		end
 	end
 	
