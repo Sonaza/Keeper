@@ -18,6 +18,8 @@ function module:OnEnable()
 end
 
 function module:UpdateBank()
+	if(not module.bankOpen) then return end
+	
 	local items = {};
 	local containers = {-1};
 	
@@ -58,9 +60,7 @@ function module:UpdateReagents()
 end
 
 function module:BAG_UPDATE_DELAYED()
-	if(module.bankOpen) then
-		module:UpdateBank();
-	end
+	module:UpdateBank();
 end
 
 function module:BANKFRAME_OPENED()

@@ -29,7 +29,7 @@ local SAVEDVARS = {
 						["incomplete"]   = {
 							["bank"]        = true,
 							["mail"]        = true,
-							["voidstorage"] = CanUseVoidStorage(),
+							["voidstorage"] = true,
 						},
 						
 						["temp"] = {
@@ -71,6 +71,10 @@ function addon:OnEnable()
 	
 	local _, class = UnitClass("player");
 	playerData.class = class;
+	
+	if(not CanUseVoidStorage() and playerData.incomplete.voidstorage) then
+		playerData.incomplete.voidstorage = false;
+	end
 	
 	addon:HookTips();
 	
