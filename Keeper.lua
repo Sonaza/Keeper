@@ -128,13 +128,13 @@ function addon:HookTips()
 		end
 	end);
 	
-	hooksecurefunc(GameTooltip, "SetRecipeResultItem", function(tooltip, recipeID)
-		local link = C_TradeSkillUI.GetRecipeItemLink(recipeID);
-		if(link) then
-			addon:AddTooltipInfo(tooltip, link);
-			tooltip:Show();
-		end
-	end);
+	-- hooksecurefunc(GameTooltip, "SetRecipeResultItem", function(tooltip, recipeID)
+	-- 	local link = C_TradeSkillUI.GetRecipeItemLink(recipeID);
+	-- 	if(link) then
+	-- 		addon:AddTooltipInfo(tooltip, link);
+	-- 		tooltip:Show();
+	-- 	end
+	-- end);
 	
 	hooksecurefunc(GameTooltip, "SetRecipeReagentItem", function(tooltip, recipeID, reagentIndex)
 		local link = C_TradeSkillUI.GetRecipeReagentItemLink(recipeID, reagentIndex);
