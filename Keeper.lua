@@ -120,29 +120,29 @@ function addon:HookTips()
 	-- 	end,
 	-- });
 	
-	-- hooksecurefunc(GameTooltip, "SetInboxItem", function(tooltip, mailID, attachmentIndex)
-	-- 	local link = GetInboxItemLink(mailID, attachmentIndex or 1);
-	-- 	if(link) then
-	-- 		addon:AddTooltipInfo(tooltip, link);
-	-- 		tooltip:Show();
-	-- 	end
-	-- end);
+	hooksecurefunc(GameTooltip, "SetInboxItem", function(tooltip, mailID, attachmentIndex)
+		local link = GetInboxItemLink(mailID, attachmentIndex or 1);
+		if(link) then
+			addon:AddTooltipInfo(tooltip, link);
+			tooltip:Show();
+		end
+	end);
 	
-	-- hooksecurefunc(GameTooltip, "SetRecipeResultItem", function(tooltip, recipeID)
-	-- 	local link = C_TradeSkillUI.GetRecipeItemLink(recipeID);
-	-- 	if(link) then
-	-- 		addon:AddTooltipInfo(tooltip, link);
-	-- 		tooltip:Show();
-	-- 	end
-	-- end);
+	hooksecurefunc(GameTooltip, "SetRecipeResultItem", function(tooltip, recipeID)
+		local link = C_TradeSkillUI.GetRecipeItemLink(recipeID);
+		if(link) then
+			addon:AddTooltipInfo(tooltip, link);
+			tooltip:Show();
+		end
+	end);
 	
-	-- hooksecurefunc(GameTooltip, "SetRecipeReagentItem", function(tooltip, recipeID, reagentIndex)
-	-- 	local link = C_TradeSkillUI.GetRecipeReagentItemLink(recipeID, reagentIndex);
-	-- 	if(link) then
-	-- 		addon:AddTooltipInfo(tooltip, link);
-	-- 		tooltip:Show();
-	-- 	end
-	-- end);
+	hooksecurefunc(GameTooltip, "SetRecipeReagentItem", function(tooltip, recipeID, reagentIndex)
+		local link = C_TradeSkillUI.GetRecipeReagentItemLink(recipeID, reagentIndex);
+		if(link) then
+			addon:AddTooltipInfo(tooltip, link);
+			tooltip:Show();
+		end
+	end);
 end
 
 function addon:PLAYER_STARTED_MOVING()
