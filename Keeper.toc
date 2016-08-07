@@ -1,7 +1,7 @@
 ## Interface: 70000
 ## Title: Keeper
 ## Notes: A mighty squire to hold your inventory info
-## Version: 0.1.0
+## Version: 0.2.0
 ## Author: Sonaza
 ## OptionalDeps: Ace3
 ## SavedVariables: KeeperDB
