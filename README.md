@@ -8,5 +8,7 @@ Additionally as a safety measure Keeper colors mail recipient box the class colo
 
 Upon login Keeper will remind you if the database is not complete. The addon requires you to open mail box, bank and void storage (if unlocked) to complete the database.
 
+Note: this addon duplicates functionality offered by some other addons (for example bag addons like Bagnon) and you should disable them or the specific feature if you wish to use this addon instead.
+
 ## Dependencies
 Keeper uses Ace3 and LibExtraTip which are included in the /libs directory.
